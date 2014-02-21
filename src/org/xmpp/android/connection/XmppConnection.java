@@ -288,6 +288,9 @@ public class XmppConnection implements Connection {
 				}
 				eventType = xpp.next();
 			}
+			if (stanza instanceof Error) {
+				Log.w(TAG, "Error received: "+((Error) stanza).getErrorCondition());
+			}
 			return stanza;
 		} catch (Throwable t) {
 			handleException("while reading xml", t);
@@ -306,7 +309,6 @@ public class XmppConnection implements Connection {
 				attributes.put(xpp.getAttributeName(i), xpp.getAttributeValue(i));
 			}
 			Stanza stanza = new XmppStanza(xpp.getNamespace(), xpp.getName(), attributes).encapsulate();
-			//Log.d(TAG, stanza.toString());
 			return stanza;
 		} catch (Throwable t) {
 			handleException("while reading xml", t);
@@ -317,6 +319,7 @@ public class XmppConnection implements Connection {
 	@Override
 	public void send(String string) {
 		try {
+			//Log.d(TAG, "Send: "+string);
 			os.write(string.getBytes(Charset.forName("utf-8")));
 		} catch (Throwable e) {
 			handleException("while writing to " + os, e);

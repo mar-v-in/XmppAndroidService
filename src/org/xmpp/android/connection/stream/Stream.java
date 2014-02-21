@@ -19,7 +19,7 @@ public class Stream extends XmppStanza {
 	}
 
 	public Stream(String from, String to, String version, String lang) {
-		super(TYPE.getNamespace(), TYPE.getElement(), buildAttributes(from, to, version, lang));
+		super(TYPE, buildAttributes(from, to, version, lang));
 	}
 
 	public Stream(XmppStanza clone) {

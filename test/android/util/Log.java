@@ -7,6 +7,11 @@ public class Log {
 		return 0;
 	}
 
+	public static int w(String tag, String msg) {
+		System.err.println("W/"+tag+": "+msg);
+		return 0;
+	}
+
 	public static int d(String TAG, String msg) {
 		System.err.println("D/"+TAG+": "+msg);
 		return 0;

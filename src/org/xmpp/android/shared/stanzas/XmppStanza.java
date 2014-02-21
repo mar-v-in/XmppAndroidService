@@ -2,7 +2,6 @@ package org.xmpp.android.shared.stanzas;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import org.xmpp.android.connection.Connection;
 
 import java.lang.reflect.Constructor;
@@ -142,7 +141,7 @@ public class XmppStanza implements Parcelable, Stanza {
 	public static void register(StanzaType type, Class<? extends Stanza> clazz) {
 		synchronized (known) {
 			known.put(type, clazz);
-			Log.d(TAG, "registered type " + type + " for " + clazz);
+			//Log.d(TAG, "registered type " + type + " for " + clazz);
 		}
 	}
 
