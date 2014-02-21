@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:accountType="org.xmpp"
+                       android:icon="@drawable/ic_xmpp"
+                       android:smallIcon="@drawable/ic_xmpp_small"
+                       android:label="@string/account_label"
+                       android:accountPreferences="@xml/account_preferences"/>

@@ -1,0 +1,17 @@
+# Generated stuff
+gen/
+bin/
+out/
+
+# Local config
+local.properties
+
+# IDE stuff
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+
+# Project specific
+test/org/xmpp/android/LoginData.java

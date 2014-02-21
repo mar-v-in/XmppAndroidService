@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">XmppAndroidService</string>
+    <string name="account_label">XMPP</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="address_hint">XMPP address (eg. joe@jabber.org)</string>
+    <string name="resource_hint">XMPP resource</string>
+    <string name="signing_in">Signing in</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_address">This XMPP address is invalid</string>
+    <string name="error_login_invalid">Could not login</string>
+</resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.xmpp.android">
+    <permission android:name="org.xmpp.android.READ_STANZA"/>
+    <permission android:name="org.xmpp.android.SEND_STANZA"/>
+    <permission android:name="org.xmpp.android.READ_PRESENCE"/>
+    <permission android:name="org.xmpp.android.SEND_PRESENCE"/>
+    <permission android:name="org.xmpp.android.READ_MESSAGE"/>
+    <permission android:name="org.xmpp.android.SEND_MESSAGE"/>
+
+    <uses-permission android:name="org.xmpp.android.READ_STANZA"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19"/>
+
+    <application android:icon="@drawable/ic_xmpp" android:label="@string/app_name"
+                 android:theme="@android:style/Theme.DeviceDefault.Light">
+
+        <service android:name=".connection.ConnectionService"/>
+
+        <service android:name=".contact.ContactService"/>
+        <receiver android:name=".contact.ContactService$PresenceReceiver">
+            <intent-filter>
+                <action android:name="org.xmpp.android.INCOMING_STANZA"/>
+                <category android:name="org.xmpp.android.stanza.presence"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".contact.ContactService$RosterReceiver">
+            <intent-filter>
+                <action android:name="org.xmpp.android.INCOMING_STANZA"/>
+                <category android:name="org.xmpp.android.stanza.iq.result"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".contact.ContactSyncAdapterService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+
+            <meta-data
+                    android:name="android.content.SyncAdapter"
+                    android:resource="@xml/contacts_sync_adapter"/>
+            <meta-data
+                    android:name="android.provider.CONTACTS_STRUCTURE"
+                    android:resource="@xml/contacts_structure"/>
+        </service>
+
+        <activity android:name=".account.AuthenticatorActivity"/>
+        <service android:name=".account.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                       android:resource="@xml/account_authenticator"/>
+        </service>
+    </application>
+</manifest>

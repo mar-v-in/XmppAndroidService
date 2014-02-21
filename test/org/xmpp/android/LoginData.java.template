@@ -1,0 +1,7 @@
+package org.xmpp.android;
+
+import org.xmpp.android.shared.Jid;
+
+public class LoginData {
+	static final Jid TEST_LOGIN_JID = Jid.builder().user("username").server("jabber.org").password("password").resource("resource").build();
+}
