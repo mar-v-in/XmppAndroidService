@@ -59,4 +59,8 @@ public class Stream extends XmppStanza {
 	public StanzaType getStanzaType() {
 		return TYPE;
 	}
+
+	public Features getFeatures() {
+		return (Features) getSubStanzas().get(0);
+	}
 }

@@ -6,7 +6,7 @@ import org.xmpp.android.shared.stanzas.XmppStanza;
 public class Error extends XmppStanza {
 
 	/**
-	 * XMPP Stream error conditions as defined in RFC 6120 4.9.3.
+	 * XMPP Stream error conditions as defined in RFC 6120 Section 4.9.3.
 	 */
 	public enum ErrorCondition {
 		bad_format,

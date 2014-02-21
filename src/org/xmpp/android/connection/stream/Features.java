@@ -1,6 +1,8 @@
 package org.xmpp.android.connection.stream;
 
+import android.util.Log;
 import org.xmpp.android.shared.XmppNamespaces;
+import org.xmpp.android.shared.stanzas.Stanza;
 import org.xmpp.android.shared.stanzas.XmppStanza;
 
 public class Features extends XmppStanza {
@@ -18,5 +20,14 @@ public class Features extends XmppStanza {
 	@Override
 	public StanzaType getStanzaType() {
 		return TYPE;
+	}
+
+	public <T> T getFeature(Class<T> cls) {
+		for (Stanza stanza : getSubStanzas()) {
+			if (stanza.getClass().equals(cls)) {
+				return (T) stanza;
+			}
+		}
+		return null;
 	}
 }
