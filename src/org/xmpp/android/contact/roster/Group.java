@@ -1,10 +1,11 @@
 package org.xmpp.android.contact.roster;
 
+import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.shared.stanzas.BaseStanza;
 import org.xmpp.android.shared.stanzas.XmppStanza;
 
 public class Group extends BaseStanza {
-	public static final StanzaType TYPE = new StanzaType("group", "jabber:iq:roster");
+	public static final StanzaType TYPE = new StanzaType(XmppNamespaces.NAMESPACE_JABBER_ROSTER, "group");
 
 	public Group(XmppStanza stanza) {
 		super(stanza);

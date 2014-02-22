@@ -22,7 +22,12 @@ public class XmppConnectionTest {
 		connection.getStream().pushTag(new SysoutConnection());
 		connection.send("<presence><show>away</show><status>Test</status><priority>51</priority></presence>");
 		connection.flush();
-		Thread.sleep(1000000);
+		Thread.sleep(1000);
 		connection.close();
+	}
+
+	@Test
+	public void testTestJid() throws Exception {
+		assert XmppConnection.testJid(LoginData.TEST_LOGIN_JID);
 	}
 }

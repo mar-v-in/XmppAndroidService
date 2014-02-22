@@ -9,4 +9,5 @@ public class XmppNamespaces {
 
 	public static final String NAMESPACE_JABBER_STREAMS = "http://etherx.jabber.org/streams";
 	public static final String NAMESPACE_JABBER_CLIENT = "jabber:client";
+	public static final String NAMESPACE_JABBER_ROSTER = "jabber:iq:roster";
 }

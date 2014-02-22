@@ -26,6 +26,7 @@ public final class Jid implements Parcelable {
 	}
 
 	public static Jid of(String jid) {
+		if (jid == null) return null;
 		return builderOf(jid).build();
 	}
 

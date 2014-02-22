@@ -2,6 +2,7 @@ package org.xmpp.android.connection;
 
 
 import android.util.Base64;
+import android.util.Log;
 import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.shared.stanzas.Stanza;
 import org.xmpp.android.shared.stanzas.TextStanza;
@@ -29,6 +30,7 @@ public class SaslNegotiation implements ConnectionFeature {
 		Auth.register();
 		Mechanisms.register();
 		Success.register();
+		Failure.register();
 	}
 
 	@Override
@@ -51,10 +53,10 @@ public class SaslNegotiation implements ConnectionFeature {
 			if (success instanceof Success) {
 				connection.resetSocket(connection.getSocket());
 			} else {
-				throw new RuntimeException("Response is not success, but " + success.getStanzaType().getElement());
+				throw new RuntimeException("Response is not success, but " + success);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Could not STARTTLS", e);
+			throw new RuntimeException("Could not SASL", e);
 		}
 	}
 

@@ -79,15 +79,15 @@ public class ContactService extends Service {
 			Log.d(TAG, "handling roster: " + intent);
 			assert intentTypeMatches(intent, IqStanza.TYPE);
 			IqStanza iq = (IqStanza) ((XmppStanza) intent.getParcelableExtra("stanza")).encapsulate();
-			if (iq.getType().equals("result") && (iq.getSubStanza() instanceof Query)) {
+			if (iq.getIqType() == IqStanza.Type.result && (iq.getSubStanza() instanceof Query)) {
 				Intent forwardIntent = new Intent(intent);
 				forwardIntent.setAction(ACTION_INCOMING_ROSTER);
 				forwardIntent.setClass(context, ContactService.class);
 				context.startService(forwardIntent);
 			} else if (iq.getSubStanza() != null) {
 				Log.d(TAG,
-					  "iqtype: " + iq.getType() + ", subType: " + iq.getSubStanza().getStanzaType() + ", subClass: " +
-					  iq.getSubStanza().getClass());
+						"iqtype: " + iq.getIqType() + ", subType: " + iq.getSubStanza().getStanzaType() + ", subClass: " +
+								iq.getSubStanza().getClass());
 			} else {
 				Log.d(TAG, "no sub stanza provided: " + iq);
 			}

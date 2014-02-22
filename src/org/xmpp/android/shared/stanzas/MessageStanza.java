@@ -5,7 +5,7 @@ import org.xmpp.android.shared.XmppNamespaces;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageStanza extends BaseStanza {
+public class MessageStanza extends CommonStanza {
 	public static final StanzaType TYPE = new StanzaType(XmppNamespaces.NAMESPACE_JABBER_CLIENT, "message");
 
 	public MessageStanza(XmppStanza stanza) {
@@ -22,13 +22,5 @@ public class MessageStanza extends BaseStanza {
 		attributes.put("from", from);
 		attributes.put("to", to);
 		return attributes;
-	}
-
-	public String getFrom() {
-		return stanza.getAttribute("from");
-	}
-
-	public String getTo() {
-		return stanza.getAttribute("to");
 	}
 }

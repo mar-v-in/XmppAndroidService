@@ -6,6 +6,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.StatusUpdates;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
+import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.util.Log;
 import org.xmpp.android.account.AccountHelper;
 import org.xmpp.android.contact.roster.Item;
@@ -21,34 +25,34 @@ public class ContactHelper {
 
 	private static int contractPresence(PresenceStanza presence) {
 		if (presence.getPresenceType() == PresenceStanza.Type.unavailable) {
-			return ContactsContract.StatusUpdates.OFFLINE;
+			return StatusUpdates.OFFLINE;
 		}
 		if ((presence.getPresenceType() == PresenceStanza.Type.unsubscribed) ||
 			(presence.getPresenceType() == PresenceStanza.Type.error)) {
-			return ContactsContract.StatusUpdates.INVISIBLE;
+			return StatusUpdates.INVISIBLE;
 		}
 		if (presence.getShow() == null) {
-			return ContactsContract.StatusUpdates.AVAILABLE;
+			return StatusUpdates.AVAILABLE;
 		}
 		switch (presence.getShow()) {
 			case away:
-				return ContactsContract.StatusUpdates.IDLE;
+				return StatusUpdates.IDLE;
 			case xa:
-				return ContactsContract.StatusUpdates.AWAY;
+				return StatusUpdates.AWAY;
 			case dnd:
-				return ContactsContract.StatusUpdates.DO_NOT_DISTURB;
+				return StatusUpdates.DO_NOT_DISTURB;
 			default:
-				return ContactsContract.StatusUpdates.AVAILABLE;
+				return StatusUpdates.AVAILABLE;
 		}
 	}
 
 	public static long findRawContact(Context context, Account account, Jid jid) {
 		Cursor query = context.getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
-														  new String[]{ContactsContract.RawContacts._ID},
+														  new String[]{RawContacts._ID},
 														  String.format(QUERY_AND_3,
-																		ContactsContract.RawContacts.ACCOUNT_TYPE,
-																		ContactsContract.RawContacts.ACCOUNT_NAME,
-																		ContactsContract.RawContacts.SOURCE_ID),
+																		RawContacts.ACCOUNT_TYPE,
+																		RawContacts.ACCOUNT_NAME,
+																		RawContacts.SOURCE_ID),
 														  new String[]{AccountHelper.ACCOUNT_TYPE, account.name,
 																	   jid.withoutResource()}, null);
 		while (query.moveToNext() && !query.isAfterLast()) {
@@ -62,23 +66,27 @@ public class ContactHelper {
 
 	public static void insertContactFromItem(Context context, Item item, Account account) {
 		if (item == null || item.getJid() == null) return;
-		ContentValues contentValues = new ContentValues();
-		contentValues.put(ContactsContract.RawContacts.ACCOUNT_TYPE, AccountHelper.ACCOUNT_TYPE);
-		contentValues.put(ContactsContract.RawContacts.ACCOUNT_NAME, account.name);
-		contentValues.put(ContactsContract.RawContacts.SOURCE_ID, item.getJid().toString());
-		contentValues.put(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY,
-						  item.getName() != null ? item.getName() : item.getJid().withoutResource());
-		Uri result = context.getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, contentValues);
+		ContentValues values = new ContentValues();
+		values.put(RawContacts.ACCOUNT_TYPE, AccountHelper.ACCOUNT_TYPE);
+		values.put(RawContacts.ACCOUNT_NAME, account.name);
+		values.put(RawContacts.SOURCE_ID, item.getJid().toString());
+		Uri result = context.getContentResolver().insert(RawContacts.CONTENT_URI, values);
 		Log.d(TAG, "insertContact: " + item.toString() + " => " + result.toString());
 		long id = Long.parseLong(result.getLastPathSegment());
-		contentValues = new ContentValues();
-		contentValues.put(ContactsContract.CommonDataKinds.Im.RAW_CONTACT_ID, id);
-		contentValues.put(ContactsContract.CommonDataKinds.Im.MIMETYPE,
-						  ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE);
-		contentValues.put(ContactsContract.CommonDataKinds.Im.DATA, item.getJid().withoutResource());
-		contentValues
-				.put(ContactsContract.CommonDataKinds.Im.PROTOCOL, ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER);
-		result = context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, contentValues);
+		values = new ContentValues();
+		values.put(Im.RAW_CONTACT_ID, id);
+		values.put(Im.MIMETYPE,
+				Im.CONTENT_ITEM_TYPE);
+		values.put(Im.DATA, item.getJid().withoutResource());
+		values
+				.put(Im.PROTOCOL, Im.PROTOCOL_JABBER);
+		result = context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+		Log.d(TAG, "insertContact: " + item.toString() + " => " + result.toString());
+		values.clear();
+		values.put(StructuredName.RAW_CONTACT_ID, id);
+		values.put(StructuredName.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE);
+		values.put(StructuredName.DISPLAY_NAME, item.getName() != null ? item.getName() : item.getJid().withoutResource());
+		result = context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
 		Log.d(TAG, "insertContact: " + item.toString() + " => " + result.toString());
 	}
 
@@ -127,14 +135,16 @@ public class ContactHelper {
 
 	public static void updateContactPresence(Context context, PresenceStanza presence, long id) {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(ContactsContract.StatusUpdates.PROTOCOL, ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER);
-		contentValues.put(ContactsContract.StatusUpdates.IM_HANDLE, presence.getFrom().withoutResource());
-		contentValues.put(ContactsContract.StatusUpdates.IM_ACCOUNT, presence.getTo().withoutResource());
-		contentValues.put(ContactsContract.StatusUpdates.PRESENCE, contractPresence(presence));
+		contentValues.put(StatusUpdates.PROTOCOL, Im.PROTOCOL_JABBER);
+		contentValues.put(StatusUpdates.IM_HANDLE, presence.getFrom().withoutResource());
+		contentValues.put(StatusUpdates.IM_ACCOUNT, presence.getTo().withoutResource());
+		contentValues.put(StatusUpdates.PRESENCE, contractPresence(presence));
 		if ((presence.getStatus() != null) && !presence.getStatus().isEmpty()) {
-			contentValues.put(ContactsContract.StatusUpdates.STATUS, presence.getStatus());
+			contentValues.put(StatusUpdates.STATUS, presence.getStatus());
+		} else {
+			contentValues.put(StatusUpdates.STATUS, "");
 		}
-		Uri insert = context.getContentResolver().insert(ContactsContract.StatusUpdates.CONTENT_URI, contentValues);
+		Uri insert = context.getContentResolver().insert(StatusUpdates.CONTENT_URI, contentValues);
 		Log.d(TAG, "updatePresence: " + presence.toString() + " => " + insert.toString());
 		//TODO: Implement
 	}

@@ -1,6 +1,8 @@
 package org.xmpp.android.connection;
 
 import android.util.Log;
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.mxp1.MXParserCachingStrings;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -35,6 +37,7 @@ public class XmppConnection implements Connection {
 	private Jid jid;
 	private StartTlsNegotiation startTls = new StartTlsNegotiation(this);
 	private SaslNegotiation sasl = new SaslNegotiation(this);
+	private boolean closed;
 
 	static {
 		SaslNegotiation.register();
@@ -78,7 +81,9 @@ public class XmppConnection implements Connection {
 							listener.stanzaRead(stanza);
 						}
 					} catch (Exception e) {
-						xmppConnection.handleException("while reading next xml", e);
+						if (!xmppConnection.closed) {
+							xmppConnection.handleException("while reading next xml", e);
+						}
 					}
 				}
 			}
@@ -106,6 +111,7 @@ public class XmppConnection implements Connection {
 
 	@Override
 	public void close() {
+		closed = true;
 		try {
 			if (readingThread != null) {
 				readingThread.interrupt();
@@ -162,7 +168,7 @@ public class XmppConnection implements Connection {
 			iq.asXmppStanza().pushTag(this);
 			Stanza result = readFullStanza();
 			if (result instanceof IqStanza) {
-				if ("result".equals(((IqStanza) result).getType())) {
+				if (((IqStanza) result).getIqType() == IqStanza.Type.result) {
 					bind = (Bind) result.asXmppStanza().getSubStanzas().get(0);
 					this.jid = Jid.of(bind.getJid());
 					return;
@@ -180,7 +186,7 @@ public class XmppConnection implements Connection {
 			iq.asXmppStanza().pushTag(this);
 			Stanza result = readFullStanza();
 			if (result instanceof IqStanza) {
-				if ("result".equals(((IqStanza) result).getType())) {
+				if (((IqStanza) result).getIqType() == IqStanza.Type.result) {
 					return;
 				}
 			}
@@ -192,11 +198,13 @@ public class XmppConnection implements Connection {
 			throws IOException, XmlPullParserException {
 		initXmppStream();
 		if (startTls.isSupported()) {
+			Log.d(TAG, "Enabling STARTTLS");
 			startTls.start();
 		} else {
 			Log.w(TAG, "STARTTLS is not supported. That's evil isn't it?");
 		}
 		if (sasl.isSupported()) {
+			Log.d(TAG, "Login using SASL");
 			sasl.start();
 		} else {
 			Log.w(TAG, "SASL is not supported. That's evil isn't it?");
@@ -273,9 +281,8 @@ public class XmppConnection implements Connection {
 		is = socket.getInputStream();
 		os = socket.getOutputStream();
 		try {
-			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			xpp = factory.newPullParser();
+			xpp = new MXParserCachingStrings();
+			xpp.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
 			xpp.setInput(is, "UTF-8");
 		} catch (XmlPullParserException e) {
 			throw new RuntimeException(e);

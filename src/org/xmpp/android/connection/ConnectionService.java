@@ -55,11 +55,7 @@ public class ConnectionService extends Service {
 		public void stanzaRead(Stanza stanza) {
 			Intent i = new Intent("org.xmpp.android.INCOMING_STANZA");
 			i.putExtra("stanza", stanza.asXmppStanza());
-			if ((stanza instanceof IqStanza) && (((IqStanza) stanza).getType() != null)) {
-				i.addCategory("org.xmpp.android.stanza.iq." + ((IqStanza) stanza).getType());
-			} else if (stanza.getStanzaType().getElement() != null) {
-				i.addCategory("org.xmpp.android.stanza." + stanza.getStanzaType().getElement());
-			}
+			i.addCategory("org.xmpp.android.stanza." + stanza.getStanzaType().getElement());
 			Log.d(TAG, "sending Intent: " + i);
 			sendBroadcast(i, Manifest.permission.READ_STANZA);
 		}

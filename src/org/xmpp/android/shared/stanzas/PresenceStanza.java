@@ -6,7 +6,7 @@ import org.xmpp.android.shared.XmppNamespaces;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PresenceStanza extends BaseStanza {
+public class PresenceStanza extends CommonStanza {
 	public static final StanzaType TYPE = new StanzaType(XmppNamespaces.NAMESPACE_JABBER_CLIENT, "presence");
 
 	public PresenceStanza(XmppStanza stanza) {
@@ -28,10 +28,6 @@ public class PresenceStanza extends BaseStanza {
 		return attributes;
 	}
 
-	public Jid getFrom() {
-		return Jid.of(stanza.getAttribute("from"));
-	}
-
 	public Type getPresenceType() {
 		return Type.of(stanza.getAttribute("type"));
 	}
@@ -50,10 +46,6 @@ public class PresenceStanza extends BaseStanza {
 
 	public String getStatus() {
 		return stanza.getSubText(XmppNamespaces.NAMESPACE_JABBER_CLIENT, "status");
-	}
-
-	public Jid getTo() {
-		return Jid.of(stanza.getAttribute("to"));
 	}
 
 	@Override

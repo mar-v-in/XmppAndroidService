@@ -38,7 +38,7 @@
         <receiver android:name=".contact.ContactService$RosterReceiver">
             <intent-filter>
                 <action android:name="org.xmpp.android.INCOMING_STANZA"/>
-                <category android:name="org.xmpp.android.stanza.iq.result"/>
+	            <category android:name="org.xmpp.android.stanza.iq"/>
             </intent-filter>
         </receiver>
         <service android:name=".contact.ContactSyncAdapterService">

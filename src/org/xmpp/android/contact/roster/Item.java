@@ -1,5 +1,6 @@
 package org.xmpp.android.contact.roster;
 
+import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.shared.stanzas.BaseStanza;
 import org.xmpp.android.shared.Jid;
 import org.xmpp.android.shared.stanzas.Stanza;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Item extends BaseStanza {
-	public static final StanzaType TYPE = new StanzaType("item", "jabber:iq:roster");
+	public static final StanzaType TYPE = new StanzaType(XmppNamespaces.NAMESPACE_JABBER_ROSTER, "item");
 
 	public Item(XmppStanza stanza) {
 		super(stanza);

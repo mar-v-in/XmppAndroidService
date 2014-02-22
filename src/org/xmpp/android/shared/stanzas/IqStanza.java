@@ -4,14 +4,15 @@ import org.xmpp.android.shared.Jid;
 import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.util.RandomTools;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class IqStanza extends BaseStanza {
+public class IqStanza extends CommonStanza {
 	public static final XmppStanza.StanzaType TYPE = new XmppStanza.StanzaType(XmppNamespaces.NAMESPACE_JABBER_CLIENT, "iq");
 	private static final int ID_LENGTH = 32;
+
+	public enum Type {
+		get, set, result, error
+	}
 
 	public IqStanza(XmppStanza stanza) {
 		super(stanza);
@@ -27,13 +28,7 @@ public class IqStanza extends BaseStanza {
 	}
 
 	public IqStanza(Jid from, String type, Stanza subStanza) {
-		super(new XmppStanza(TYPE, buildAttributes(from, type), asList(subStanza)));
-	}
-
-	private static <T> List<T> asList(T t) {
-		List<T> tList = new ArrayList<T>();
-		tList.add(t);
-		return tList;
+		super(new XmppStanza(TYPE, buildAttributes(from, type), Arrays.asList(subStanza)));
 	}
 
 	private static Map<String, String> buildAttributes(Jid from, String type) {
@@ -51,22 +46,22 @@ public class IqStanza extends BaseStanza {
 		return attributes;
 	}
 
-	public String getId() {
-		return stanza.getAttribute("id");
-	}
-
 	public Stanza getSubStanza() {
-		if (stanza.getSubStanzas().size() == 1) {
-			return stanza.getSubStanzas().get(0);
+		if (getIqType() != Type.error) {
+			if (stanza.getSubStanzas().size() == 1) {
+				return stanza.getSubStanzas().get(0);
+			}
+		} else {
+			for (Stanza stanza : this.stanza.getSubStanzas()) {
+				if (!stanza.getStanzaType().getElement().equals("error")) {
+					return stanza;
+				}
+			}
 		}
 		return null;
 	}
 
-	public Jid getTo() {
-		return Jid.of(stanza.getAttribute("to"));
-	}
-
-	public String getType() {
-		return stanza.getAttribute("type");
+	public Type getIqType() {
+		return Type.valueOf(getType());
 	}
 }
