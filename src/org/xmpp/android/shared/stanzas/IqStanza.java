@@ -4,14 +4,23 @@ import org.xmpp.android.shared.Jid;
 import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.util.RandomTools;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IqStanza extends CommonStanza {
 	public static final XmppStanza.StanzaType TYPE = new XmppStanza.StanzaType(XmppNamespaces.NAMESPACE_JABBER_CLIENT, "iq");
 	private static final int ID_LENGTH = 32;
 
 	public enum Type {
-		get, set, result, error
+		get, set, result, error;
+
+		public static Type of(String s) {
+			if (s == null) {
+				return null;
+			}
+			return valueOf(s);
+		}
 	}
 
 	public IqStanza(XmppStanza stanza) {
@@ -62,6 +71,6 @@ public class IqStanza extends CommonStanza {
 	}
 
 	public Type getIqType() {
-		return Type.valueOf(getType());
+		return Type.of(getType());
 	}
 }

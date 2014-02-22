@@ -1,6 +1,5 @@
 package org.xmpp.android.connection.stream;
 
-import android.util.Log;
 import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.shared.stanzas.Stanza;
 import org.xmpp.android.shared.stanzas.XmppStanza;

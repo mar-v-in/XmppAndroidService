@@ -19,7 +19,7 @@ public class BaseStanza implements Stanza {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+"{" +
+		return getClass().getSimpleName() + "{" +
 				"stanza=" + stanza +
 				'}';
 	}

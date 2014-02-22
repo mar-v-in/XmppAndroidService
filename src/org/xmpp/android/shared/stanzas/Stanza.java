@@ -28,7 +28,8 @@ public interface Stanza {
 			this.namespace = in.readString();
 			this.element = in.readString();
 		}
-		public static final Parcelable.Creator<StanzaType> CREATOR = new Parcelable.Creator<StanzaType>(){
+
+		public static final Parcelable.Creator<StanzaType> CREATOR = new Parcelable.Creator<StanzaType>() {
 
 			public StanzaType createFromParcel(Parcel source) {
 				return new StanzaType(source);
@@ -51,10 +52,11 @@ public interface Stanza {
 		public boolean equals(final java.lang.Object o) {
 			if (o == this) return true;
 			if (!(o instanceof Stanza.StanzaType)) return false;
-			final StanzaType other = (StanzaType)o;
+			final StanzaType other = (StanzaType) o;
 			final java.lang.Object this$namespace = this.getNamespace();
 			final java.lang.Object other$namespace = other.getNamespace();
-			if (this$namespace == null ? other$namespace != null : !this$namespace.equals(other$namespace)) return false;
+			if (this$namespace == null ? other$namespace != null : !this$namespace.equals(other$namespace))
+				return false;
 			final java.lang.Object this$element = this.getElement();
 			final java.lang.Object other$element = other.getElement();
 			if (this$element == null ? other$element != null : !this$element.equals(other$element)) return false;

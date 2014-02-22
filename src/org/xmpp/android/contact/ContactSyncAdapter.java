@@ -17,7 +17,7 @@ public class ContactSyncAdapter extends AbstractThreadedSyncAdapter {
 
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
-							  SyncResult syncResult) {
-		Log.d(TAG, "onPerformSync: "+account);
+	                          SyncResult syncResult) {
+		Log.d(TAG, "onPerformSync: " + account);
 	}
 }

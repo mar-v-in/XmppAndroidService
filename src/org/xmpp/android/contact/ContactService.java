@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.Log;
-import org.xmpp.android.contact.roster.Query;
 import org.xmpp.android.shared.stanzas.IqStanza;
 import org.xmpp.android.shared.stanzas.PresenceStanza;
 import org.xmpp.android.shared.stanzas.Stanza;
@@ -19,7 +18,7 @@ public class ContactService extends Service {
 	private static final String TAG = "XMPP/ContactService";
 
 	static {
-		Query.register();
+		Roster.Query.register();
 	}
 
 	public static boolean intentTypeMatches(Intent intent, Stanza.StanzaType type) {
@@ -44,7 +43,7 @@ public class ContactService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		Log.d(TAG, "handling intent: "+intent);
+		Log.d(TAG, "handling intent: " + intent);
 		if (intent.getAction().equals(ACTION_INCOMING_PRESENCE)) {
 			ContactHelper.storePresence(this, (PresenceStanza) ((XmppStanza) intent.getParcelableExtra("stanza"))
 					.encapsulate());
@@ -52,7 +51,7 @@ public class ContactService extends Service {
 			XmppStanza stanza = (XmppStanza) intent.getParcelableExtra("stanza");
 			Log.d(TAG, stanza.buildNoChildTag());
 			IqStanza iq = (IqStanza) (stanza).encapsulate();
-			ContactHelper.storeRosterItems(this, iq.getTo(), ((Query) iq.getSubStanza()).getItems());
+			ContactHelper.storeRosterItems(this, iq.getTo(), ((Roster.Query) iq.getSubStanza()).getItems());
 		}
 		return START_STICKY;
 	}
@@ -71,7 +70,7 @@ public class ContactService extends Service {
 	public static class RosterReceiver extends BroadcastReceiver {
 
 		static {
-			Query.register();
+			Roster.register();
 		}
 
 		@Override
@@ -79,7 +78,7 @@ public class ContactService extends Service {
 			Log.d(TAG, "handling roster: " + intent);
 			assert intentTypeMatches(intent, IqStanza.TYPE);
 			IqStanza iq = (IqStanza) ((XmppStanza) intent.getParcelableExtra("stanza")).encapsulate();
-			if (iq.getIqType() == IqStanza.Type.result && (iq.getSubStanza() instanceof Query)) {
+			if (iq.getIqType() == IqStanza.Type.result && (iq.getSubStanza() instanceof Roster.Query)) {
 				Intent forwardIntent = new Intent(intent);
 				forwardIntent.setAction(ACTION_INCOMING_ROSTER);
 				forwardIntent.setClass(context, ContactService.class);

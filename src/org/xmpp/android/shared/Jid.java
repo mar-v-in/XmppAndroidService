@@ -54,7 +54,7 @@ public final class Jid implements Parcelable {
 		dest.writeString(resource);
 	}
 
-	
+
 	Jid(final String user, final String server, final String password, final String resource) {
 		this.user = user;
 		this.server = server;
@@ -62,42 +62,42 @@ public final class Jid implements Parcelable {
 		this.resource = resource;
 	}
 
-	
+
 	public static class JidBuilder {
 		private String user;
 		private String server;
 		private String password;
 		private String resource;
 
-		
+
 		JidBuilder() {
 		}
 
-		
+
 		public JidBuilder user(final String user) {
 			this.user = user;
 			return this;
 		}
 
-		
+
 		public JidBuilder server(final String server) {
 			this.server = server;
 			return this;
 		}
 
-		
+
 		public JidBuilder password(final String password) {
 			this.password = password;
 			return this;
 		}
 
-		
+
 		public JidBuilder resource(final String resource) {
 			this.resource = resource;
 			return this;
 		}
 
-		
+
 		public Jid build() {
 			return new Jid(user, server, password, resource);
 		}
@@ -132,7 +132,7 @@ public final class Jid implements Parcelable {
 	public boolean equals(final java.lang.Object o) {
 		if (o == this) return true;
 		if (!(o instanceof Jid)) return false;
-		final Jid other = (Jid)o;
+		final Jid other = (Jid) o;
 		final java.lang.Object this$user = this.getUser();
 		final java.lang.Object other$user = other.getUser();
 		if (this$user == null ? other$user != null : !this$user.equals(other$user)) return false;

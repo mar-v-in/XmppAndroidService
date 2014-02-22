@@ -1,6 +1,5 @@
 package org.xmpp.android.shared.stanzas;
 
-import org.xmpp.android.shared.Jid;
 import org.xmpp.android.shared.XmppNamespaces;
 
 import java.util.HashMap;

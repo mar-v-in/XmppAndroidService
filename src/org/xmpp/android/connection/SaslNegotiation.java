@@ -2,7 +2,6 @@ package org.xmpp.android.connection;
 
 
 import android.util.Base64;
-import android.util.Log;
 import org.xmpp.android.shared.XmppNamespaces;
 import org.xmpp.android.shared.stanzas.Stanza;
 import org.xmpp.android.shared.stanzas.TextStanza;

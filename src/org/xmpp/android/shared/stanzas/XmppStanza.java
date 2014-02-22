@@ -36,7 +36,7 @@ public class XmppStanza implements Parcelable, Stanza {
 	protected static final String END_TAG = "</%s>";
 	protected static final String NO_CHILD_TAG = "<%s%s />";
 	protected static final String ATTRIBUTE_TAG = " %s=\"%s\"";
-	private static final String TAG = "XMPP/"+XmppStanza.class.getSimpleName();
+	private static final String TAG = "XMPP/" + XmppStanza.class.getSimpleName();
 	private static Map<StanzaType, Class<? extends Stanza>> known = new HashMap<StanzaType, Class<? extends Stanza>>();
 	private final StanzaType type;
 	private final Map<String, String> attributes;

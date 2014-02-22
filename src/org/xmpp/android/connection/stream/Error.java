@@ -56,6 +56,6 @@ public class Error extends XmppStanza {
 		if (getSubStanzas().isEmpty()) {
 			return null;
 		}
-		return ErrorCondition.valueOf(getSubStanzas().get(0).getStanzaType().getElement().replace('-','_'));
+		return ErrorCondition.valueOf(getSubStanzas().get(0).getStanzaType().getElement().replace('-', '_'));
 	}
 }

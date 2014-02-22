@@ -6,13 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Im;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.StatusUpdates;
-import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.util.Log;
 import org.xmpp.android.account.AccountHelper;
-import org.xmpp.android.contact.roster.Item;
 import org.xmpp.android.shared.Jid;
 import org.xmpp.android.shared.stanzas.PresenceStanza;
 
@@ -28,7 +27,7 @@ public class ContactHelper {
 			return StatusUpdates.OFFLINE;
 		}
 		if ((presence.getPresenceType() == PresenceStanza.Type.unsubscribed) ||
-			(presence.getPresenceType() == PresenceStanza.Type.error)) {
+				(presence.getPresenceType() == PresenceStanza.Type.error)) {
 			return StatusUpdates.INVISIBLE;
 		}
 		if (presence.getShow() == null) {
@@ -48,13 +47,13 @@ public class ContactHelper {
 
 	public static long findRawContact(Context context, Account account, Jid jid) {
 		Cursor query = context.getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
-														  new String[]{RawContacts._ID},
-														  String.format(QUERY_AND_3,
-																		RawContacts.ACCOUNT_TYPE,
-																		RawContacts.ACCOUNT_NAME,
-																		RawContacts.SOURCE_ID),
-														  new String[]{AccountHelper.ACCOUNT_TYPE, account.name,
-																	   jid.withoutResource()}, null);
+				new String[]{RawContacts._ID},
+				String.format(QUERY_AND_3,
+						RawContacts.ACCOUNT_TYPE,
+						RawContacts.ACCOUNT_NAME,
+						RawContacts.SOURCE_ID),
+				new String[]{AccountHelper.ACCOUNT_TYPE, account.name,
+						jid.withoutResource()}, null);
 		while (query.moveToNext() && !query.isAfterLast()) {
 			long id = query.getLong(0);
 			query.close();
@@ -64,7 +63,7 @@ public class ContactHelper {
 		return -1;
 	}
 
-	public static void insertContactFromItem(Context context, Item item, Account account) {
+	public static void insertContactFromItem(Context context, Roster.Item item, Account account) {
 		if (item == null || item.getJid() == null) return;
 		ContentValues values = new ContentValues();
 		values.put(RawContacts.ACCOUNT_TYPE, AccountHelper.ACCOUNT_TYPE);
@@ -92,7 +91,7 @@ public class ContactHelper {
 
 	public static void storePresence(Context context, PresenceStanza presence) {
 		if ((presence.getTo() != null) && (presence.getFrom() != null) &&
-			!presence.getFrom().withoutResource().equalsIgnoreCase(presence.getTo().withoutResource())) {
+				!presence.getFrom().withoutResource().equalsIgnoreCase(presence.getTo().withoutResource())) {
 			Account account = AccountHelper.getAccount(context, presence.getTo());
 			if (account != null) {
 				synchronized (contactsLock) {
@@ -108,12 +107,12 @@ public class ContactHelper {
 		}
 	}
 
-	public static void storeRosterItems(Context context, Jid to, List<Item> items) {
+	public static void storeRosterItems(Context context, Jid to, List<Roster.Item> items) {
 		if (to != null) {
 			Account account = AccountHelper.getAccount(context, to);
 			if (account != null) {
 				synchronized (contactsLock) {
-					for (Item item : items) {
+					for (Roster.Item item : items) {
 						long id = findRawContact(context, account, item.getJid());
 						if (id == -1) {
 							insertContactFromItem(context, item, account);
@@ -124,11 +123,11 @@ public class ContactHelper {
 				}
 			}
 		} else {
-			Log.w(TAG, "storeRosterItems: to is: "+to);
+			Log.w(TAG, "storeRosterItems: to is: " + to);
 		}
 	}
 
-	private static void updateContactFromItem(Context context, Item item, long id) {
+	private static void updateContactFromItem(Context context, Roster.Item item, long id) {
 		Log.d(TAG, "updateContact: " + item.toString());
 		//TODO: Implement
 	}

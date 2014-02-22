@@ -1,11 +1,9 @@
 package org.xmpp.android.connection;
 
 import android.util.Log;
-import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.mxp1.MXParserCachingStrings;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmpp.android.account.AccountHelper;
 import org.xmpp.android.connection.resource.Bind;
 import org.xmpp.android.connection.session.Session;
@@ -37,7 +35,7 @@ public class XmppConnection implements Connection {
 	private Jid jid;
 	private StartTlsNegotiation startTls = new StartTlsNegotiation(this);
 	private SaslNegotiation sasl = new SaslNegotiation(this);
-	private boolean closed;
+	private boolean closed = false;
 
 	static {
 		SaslNegotiation.register();
@@ -251,7 +249,7 @@ public class XmppConnection implements Connection {
 		try {
 			int eventType = xpp.getEventType();
 			while (eventType != XmlPullParser.START_TAG) {
-				Log.d(TAG, "Event "+eventType+" when awaiting "+XmlPullParser.START_TAG);
+				Log.d(TAG, "Event " + eventType + " when awaiting " + XmlPullParser.START_TAG);
 				eventType = xpp.next();
 			}
 			Map<String, String> attributes = new HashMap<String, String>();

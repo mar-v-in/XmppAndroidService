@@ -16,7 +16,7 @@ public class AccountHelper {
 	public static Jid buildJid(Context context, Account account) {
 		AccountManager am = AccountManager.get(context);
 		return Jid.builderOf(account.name).password(am.getPassword(account))
-				  .resource(am.getUserData(account, KEY_RESOURCE)).build();
+				.resource(am.getUserData(account, KEY_RESOURCE)).build();
 	}
 
 	public static Bundle createAccount(Context context, Jid jid) {
@@ -38,7 +38,7 @@ public class AccountHelper {
 				return account;
 			}
 		}
-		Log.w(TAG, "no account for jid: "+jid);
+		Log.w(TAG, "no account for jid: " + jid);
 		return null;
 	}
 

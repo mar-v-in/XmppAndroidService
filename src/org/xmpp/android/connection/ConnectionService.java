@@ -3,14 +3,18 @@ package org.xmpp.android.connection;
 import android.accounts.Account;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import org.xmpp.android.Manifest;
 import org.xmpp.android.account.AccountHelper;
-import org.xmpp.android.contact.roster.Query;
-import org.xmpp.android.shared.stanzas.Stanza;
+import org.xmpp.android.contact.Roster;
+import org.xmpp.android.shared.IConnectionService;
 import org.xmpp.android.shared.stanzas.IqStanza;
 import org.xmpp.android.shared.stanzas.PresenceStanza;
+import org.xmpp.android.shared.stanzas.Stanza;
+import org.xmpp.android.shared.stanzas.XmppStanza;
 
 import java.io.IOException;
 
@@ -20,7 +24,7 @@ public class ConnectionService extends Service {
 	private Thread connectionThread;
 
 	public IBinder onBind(Intent intent) {
-		return null;
+		return new Interface();
 	}
 
 	@Override
@@ -37,7 +41,7 @@ public class ConnectionService extends Service {
 					try {
 						connection = XmppConnection
 								.open(AccountHelper.buildJid(ConnectionService.this, accounts[0]), new Broadcaster());
-						new IqStanza(connection.getJid(), "get", new Query()).asXmppStanza().pushTag(connection);
+						new IqStanza(connection.getJid(), "get", new Roster.Query()).asXmppStanza().pushTag(connection);
 						new PresenceStanza().asXmppStanza().pushTag(connection);
 					} catch (IOException e) {
 						Log.w(TAG, e);
@@ -58,6 +62,22 @@ public class ConnectionService extends Service {
 			i.addCategory("org.xmpp.android.stanza." + stanza.getStanzaType().getElement());
 			Log.d(TAG, "sending Intent: " + i);
 			sendBroadcast(i, Manifest.permission.READ_STANZA);
+		}
+	}
+
+	private class Interface extends IConnectionService.Stub {
+
+		private void enforceCallingPermission(String permission) throws RemoteException {
+			if (checkCallingPermission(permission) == PackageManager.PERMISSION_DENIED) {
+				throw new RemoteException("Required permission " + permission + "not found on " + getCallingUid());
+			}
+		}
+
+		@Override
+		public void send(XmppStanza xmppStanza) throws RemoteException {
+			Stanza stanza = xmppStanza.encapsulate();
+			enforceCallingPermission(Manifest.permission.SEND_STANZA);
+			stanza.asXmppStanza().pushTag(connection);
 		}
 	}
 }
