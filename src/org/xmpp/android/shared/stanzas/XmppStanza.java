@@ -47,6 +47,7 @@ public class XmppStanza implements Parcelable, Stanza {
 		register(IqStanza.TYPE, IqStanza.class);
 		register(MessageStanza.TYPE, MessageStanza.class);
 		register(PresenceStanza.TYPE, PresenceStanza.class);
+		register(ErrorStanza.TYPE, ErrorStanza.class);
 	}
 
 
